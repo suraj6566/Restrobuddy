@@ -1,11 +1,9 @@
 import footerlogo from "../../../assets/footerlogo.png"
 import { Grid2  } from "@mui/material";
 import { useStyles } from "./AdminDashboardCss";
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
 import res from "../../../assets/res.png"
 import category from "../../../assets/cat.png"
 import food from "../../../assets/food.png"
