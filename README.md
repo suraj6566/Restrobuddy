@@ -14,6 +14,14 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
+#`how can you place order`
+
+1.choose your dining or delivery food
+2.choose our fav restaurant
+3.add items in cart.
+4.click on cart and sign up and login.
+5.add your address and make payment . happy order !!!
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
