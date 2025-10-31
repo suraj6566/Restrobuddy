@@ -1,123 +1,185 @@
-import logo from "../../../assets/footerlogo.png"
-import flag from "../../../assets/indiaflag.png"
-import flag2 from "../../../assets/uaeflag.png"
-import global from "../../../assets/globalimage.png"
-import appstoreimg from "../../../assets/appstoreimage.png"
-import googleplayimg from "../../../assets/googleplayimage.png"
-import twitter from "../../../assets/twitter.png"
-import insta from "../../../assets/insta.png"
-import fb from "../../../assets/fb.png"
-import youtube from "../../../assets/youtube.png"
-import linkedin from "../../../assets/linkedin.png"
+import React from "react";
+import {
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
+  Grid2,
+  Typography,
+  Box,
+} from "@mui/material";
 
-import { FormControl, MenuItem, Select,InputLabel,Grid2 } from "@mui/material"
-export default function Footer()
-{
-    const showFooter=()=>{
-        return(<div style={{display:"flex",width:'80%',height:'80%',marginLeft:60,}}> 
-        
-        <Grid2>
-            <Grid2 style={{marginLeft:100,marginTop:60}}>
+import logo from "../../../assets/footerlogo.png";
+import flag from "../../../assets/indiaflag.png";
+import flag2 from "../../../assets/uaeflag.png";
+import global from "../../../assets/globalimage.png";
+import appstoreimg from "../../../assets/appstoreimage.png";
+import googleplayimg from "../../../assets/googleplayimage.png";
+import twitter from "../../../assets/twitter.png";
+import insta from "../../../assets/insta.png";
+import fb from "../../../assets/fb.png";
+import youtube from "../../../assets/youtube.png";
+import linkedin from "../../../assets/linkedin.png";
 
-           <img src={logo} style={{width:160,height:70}} />
-           <Grid2 style={{fontWeight:'500',marginTop:30,letterSpacing:'2px',marginLeft:12}}>ABOUT RESTROBUDDY</Grid2>
-           <Grid2 style={{marginTop:10,fontWeight:100,marginLeft:12}}>Who We Are </Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Blog</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Work With Us</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Investor Relations</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Report Fraud</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Press Kit</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Contact Us</Grid2> </Grid2>
-
-        <Grid2 style={{marginLeft:400,marginTop:-240}}> 
-           <Grid2 style={{fontWeight:'500',marginTop:30,letterSpacing:'2px',marginLeft:12}}>RESTROVERSE </Grid2>
-           <Grid2 style={{marginTop:10,fontWeight:100,marginLeft:12}}>RestroBuddy </Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Blinkit</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>District</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Feeding India</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Hyperpure</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>RestroBuddy Live</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Restroland</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Weather Union</Grid2>
-        </Grid2>
-
-        <Grid2 style={{marginLeft:600,marginTop:-270}}> 
-           <Grid2 style={{fontWeight:'500',marginTop:30,letterSpacing:'2px',marginLeft:12}}>FOR RESTAURANTS </Grid2>
-           <Grid2 style={{marginTop:10,fontWeight:100,marginLeft:12}}>Partner With Us </Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Apps For You</Grid2>
-        </Grid2>
-
-        <Grid2 style={{marginLeft:880,marginTop:-110}}> 
-           <Grid2 style={{fontWeight:'500',marginTop:30,letterSpacing:'2px',marginLeft:12}}>LEARNE MORE </Grid2>
-           <Grid2 style={{marginTop:10,fontWeight:100,marginLeft:12}}>Privacy</Grid2>
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Security</Grid2>  
-           <Grid2 style={{marginTop:5,fontWeight:100,marginLeft:12}}>Terms</Grid2> 
-        </Grid2>
-
-        <Grid2 style={{height:150,width:150,marginLeft:1050,marginTop:-180}}> 
-        <FormControl style={{minWidth:100}} size="small"> 
-            <InputLabel>India</InputLabel>
-            <Select label="India" >
-             <MenuItem value={1}> <img src={flag} style={{width:22,height:18,marginRight:5}}/>India</MenuItem>
-             <MenuItem value={2}> <img src={flag2} style={{width:22,height:18,marginRight:5}}/>UAE</MenuItem>
-            </Select>
-            
-        </FormControl>
-        </Grid2>
-        
-        <Grid2 style={{height:150,width:150,marginLeft:1180,marginTop:-150}}>
-        <FormControl variant="outlined" style={{ minWidth: 100}} size="small"> 
-            <InputLabel>English</InputLabel>
-            <Select label="language"  autoWidth>
-             <MenuItem value={1}>
-             <img src={global} style={{width:18,height:18,marginRight:5}}/>English
-             </MenuItem>
-             <MenuItem value={2}>
-             <img src={global} style={{width:18,height:18,marginRight:5}}/>हिंदी</MenuItem>
-            </Select>
-        </FormControl>
-        </Grid2>
-        
-        <Grid2 style={{height:150,width:150,marginLeft:1100,marginTop:-105}}>
-        <Grid2 style={{fontWeight:'500',marginTop:30,letterSpacing:'2px',marginLeft:12}}>SOCIAL LINKS</Grid2>  
+export default function Footer() {
+  return (
+    <Box
+      sx={{
+        backgroundColor: "#f8f8f8",
+        py: 6,
+        px: { xs: 3, md: 10 },
+      }}
+    >
+      <Grid2
+        container
+        spacing={4}
+        justifyContent="space-between"
+        sx={{ maxWidth: "1200px", mx: "auto" }}
+      >
+        {/* Column 1 */}
+        <Grid2 xs={12} sm={6} md={3}>
+          <img src={logo} alt="RestroBuddy Logo" style={{ width: 160, height: 70 }} />
+          <Typography
+            sx={{ fontWeight: 600, mt: 3, letterSpacing: "1px" }}
+          >
+            ABOUT RESTROBUDDY
+          </Typography>
+          {[
+            "Who We Are",
+            "Blog",
+            "Work With Us",
+            "Investor Relations",
+            "Report Fraud",
+            "Press Kit",
+            "Contact Us",
+          ].map((item) => (
+            <Typography key={item} sx={{ mt: 1, fontSize: 14 }}>
+              {item}
+            </Typography>
+          ))}
         </Grid2>
 
-        <Grid2 style={{height:150,width:150,marginLeft:1110,marginTop:-115}}>
-            <img src={linkedin} style={{width:20}} />
+        {/* Column 2 */}
+        <Grid2 xs={12} sm={6} md={3}>
+          <Typography sx={{ fontWeight: 600, letterSpacing: "1px", mb: 2 }}>
+            RESTROVERSE
+          </Typography>
+          {[
+            "RestroBuddy",
+            "Blinkit",
+            "District",
+            "Feeding India",
+            "Hyperpure",
+            "RestroBuddy Live",
+            "Restroland",
+            "Weather Union",
+          ].map((item) => (
+            <Typography key={item} sx={{ mt: 1, fontSize: 14 }}>
+              {item}
+            </Typography>
+          ))}
         </Grid2>
 
-        <Grid2 style={{height:150,width:150,marginLeft:1140,marginTop:-150}}>
-            <img src={insta} style={{width:20}} />
-        </Grid2>
-        <Grid2 style={{height:150,width:150,marginLeft:1170,marginTop:-150}}>
-            <img src={twitter} style={{width:20}} />
-        </Grid2>
-        <Grid2 style={{height:150,width:150,marginLeft:1190,marginTop:-159}}>
-            <img src={youtube} style={{width:38}} />
-        </Grid2>
-        <Grid2 style={{height:150,width:150,marginLeft:1226,marginTop:-143}}>
-            <img src={fb} style={{width:24}} />
-        </Grid2>
-        <Grid2 style={{height:150,width:150,marginLeft:1110,marginTop:-95}}>
-            <img src={appstoreimg} style={{width:140}} />
-        </Grid2>
-        <Grid2 style={{height:150,width:150,marginLeft:1110,marginTop:-90}}>
-            <img src={googleplayimg} style={{width:140}} />
+        {/* Column 3 */}
+        <Grid2 xs={12} sm={6} md={3}>
+          <Typography sx={{ fontWeight: 600, letterSpacing: "1px", mb: 2 }}>
+            FOR RESTAURANTS
+          </Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>Partner With Us</Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>Apps For You</Typography>
+
+          <Typography sx={{ fontWeight: 600, mt: 4, letterSpacing: "1px" }}>
+            LEARN MORE
+          </Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>Privacy</Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>Security</Typography>
+          <Typography sx={{ mt: 1, fontSize: 14 }}>Terms</Typography>
         </Grid2>
 
-        <Grid2 style={{marginLeft:108,width:'97%'}}>
-        <hr color="#dfe6e9"/>
-        </Grid2>
+        {/* Column 4 */}
+        <Grid2 xs={12} sm={6} md={3}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* Country Select */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Country</InputLabel>
+              <Select label="Country" defaultValue={1}>
+                <MenuItem value={1}>
+                  <img
+                    src={flag}
+                    style={{ width: 22, height: 18, marginRight: 8 }}
+                    alt="India"
+                  />
+                  India
+                </MenuItem>
+                <MenuItem value={2}>
+                  <img
+                    src={flag2}
+                    style={{ width: 22, height: 18, marginRight: 8 }}
+                    alt="UAE"
+                  />
+                  UAE
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-        <Grid2 style={{marginLeft:110,marginTop:20,fontWeight:100,fontSize:14}}>
-        By continuing past this page, you agree to our Terms of Service, Cookie Policy, Privacy Policy and Content Policies. All trademarks are properties of their respective owners. 2008-2025 © RestroBuddy™ Ltd. All rights reserved.
-        </Grid2>
+            {/* Language Select */}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+              <InputLabel>Language</InputLabel>
+              <Select label="Language" defaultValue={1}>
+                <MenuItem value={1}>
+                  <img
+                    src={global}
+                    style={{ width: 18, height: 18, marginRight: 8 }}
+                    alt="English"
+                  />
+                  English
+                </MenuItem>
+                <MenuItem value={2}>
+                  <img
+                    src={global}
+                    style={{ width: 18, height: 18, marginRight: 8 }}
+                    alt="Hindi"
+                  />
+                  हिंदी
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-        </Grid2> 
-           
-        </div>)
-    }
-    return(<div style={{ backgroundColor: "rgb(248, 248, 248)", minHeight: "100vh" }}>
-    {showFooter()}
-    </div>)
-}   
+            {/* Social Links */}
+            <Typography sx={{ fontWeight: 600, mt: 3, letterSpacing: "1px" }}>
+              SOCIAL LINKS
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              <img src={linkedin} alt="LinkedIn" style={{ width: 20 }} />
+              <img src={insta} alt="Instagram" style={{ width: 20 }} />
+              <img src={twitter} alt="Twitter" style={{ width: 20 }} />
+              <img src={youtube} alt="YouTube" style={{ width: 26 }} />
+              <img src={fb} alt="Facebook" style={{ width: 22 }} />
+            </Box>
+
+            {/* App Links */}
+            <Box sx={{ mt: 2 }}>
+              <img src={appstoreimg} alt="App Store" style={{ width: 140, }} />
+              <img src={googleplayimg} alt="Google Play" style={{ width: 140,  }} />
+            </Box>
+          </Box>
+        </Grid2>
+      </Grid2>
+
+      <Box sx={{ borderTop: "1px solid #dfe6e9", mt: 5, pt: 2 }}>
+        <Typography
+          sx={{
+            fontSize: 13,
+            color: "#666",
+            textAlign: "center",
+            px: { xs: 2, md: 10 },
+          }}
+        >
+          By continuing past this page, you agree to our Terms of Service, Cookie Policy,
+          Privacy Policy and Content Policies. All trademarks are properties of their
+          respective owners. 2008–2025 © RestroBuddy™ Ltd. All rights reserved.
+        </Typography>
+      </Box>
+    </Box>
+  );
+}

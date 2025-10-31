@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { Box, Stack, useMediaQuery } from "@mui/material";
 import Header from "../Header";
 import RestroBuddyApp from "../RestroBuddyApp";
 import Footer from "../Footer";
@@ -5,27 +7,30 @@ import ImageHeaderComponent from "../ImageHeaderComponent";
 import PopularRestaurant from "../PopularRestaurant";
 import DiningOnline from "../DiningOnline";
 import ExploreComponent from "../ExploreComponent";
-import { useState, useEffect } from "react";
 import { postData } from "../../../../services/FetchNodeServices";
+
 export default function HomePage() {
   const [restaurantList, setRestaurantList] = useState([]);
   const [city, setCity] = useState([]);
-  const fetchCityId=async()=>{
-    var res = await postData("userinterface/user_fetch_cityid", {
-      cityname:'Gwalior' ,
+
+  const isMobile = useMediaQuery("(max-width:600px)");
+  const isTablet = useMediaQuery("(max-width:900px)");
+
+  const fetchCityId = async () => {
+    const res = await postData("userinterface/user_fetch_cityid", {
+      cityname: "Gwalior",
     });
     if (res.status) {
-      setCity(res.data)
-      fetchAllRestaurant(res.data?.cityid)
+      setCity(res.data);
+      fetchAllRestaurant(res.data?.cityid);
     } else {
       alert("Unable to fetch restaurant details");
     }
   };
 
-  
   const fetchAllRestaurant = async (cityid) => {
-    var res = await postData("userinterface/user_fetch_restaurant_by_city", {
-      cityid
+    const res = await postData("userinterface/user_fetch_restaurant_by_city", {
+      cityid,
     });
     if (res.status) {
       setRestaurantList(res.data);
@@ -33,29 +38,29 @@ export default function HomePage() {
       alert("Unable to fetch restaurant details");
     }
   };
-  useEffect(function () {
-    fetchCityId()
+
+  useEffect(() => {
+    fetchCityId();
   }, []);
 
-
-  var onlinedining = [
+  const onlinedining = [
     {
       id: 1,
       image: "online.jpg",
       title: "Online Order",
       description: "Stay home and order to your doorstep",
-      url:`/dininganddelivery/${city?.cityid}/${city?.cityname}`
+      url: `/dininganddelivery/${city?.cityid}/${city?.cityname}`,
     },
     {
       id: 2,
       image: "dining.jpg",
       title: "Dining",
       description: "View the city's favourite dining venues",
-      url:`/dininganddelivery/${city?.cityid}/${city?.cityname}`
+      url: `/dininganddelivery/${city?.cityid}/${city?.cityname}`,
     },
   ];
 
-  var explore = {
+  const explore = {
     "Popular cuisine near me": [
       "Bakery",
       "Coffee",
@@ -96,74 +101,94 @@ export default function HomePage() {
   };
 
   return (
-    <div>
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-         
-        }}
-      >
+    <Box
+      sx={{
+        width: "100%",
+        overflowX: "hidden",
+        bgcolor: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      {/* Header */}
+      <Box sx={{ width: "100%", maxWidth: "1500px" }}>
         <ImageHeaderComponent />
-      </div>
+      </Box>
 
-      <div
-        style={{
+      {/* Dining and Online */}
+      <Box
+        sx={{
           width: "100%",
+          maxWidth: "1500px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          flexDirection: isMobile ? "column" : "row",
+          px: isMobile ? 1 : 2,
+          py: 2,
         }}
       >
         <DiningOnline data={onlinedining} />
-      </div>
-      <div
-        style={{
+      </Box>
+
+      {/* Popular Restaurant */}
+      <Box
+        sx={{
           width: "100%",
+          maxWidth: "1500px",
+          px: isMobile ? 1 : 2,
+          py: 3,
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <PopularRestaurant
           data={restaurantList}
           title="Popular Restaurant in and around Gwalior"
         />
-      </div>
+      </Box>
 
-      <div
-        style={{
+      {/* App Section */}
+      <Box
+        sx={{
           width: "100%",
+          maxWidth: "1500px",
+          px: isMobile ? 1 : 2,
+          py: 3,
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <RestroBuddyApp />
-      </div>
+      </Box>
 
-      <div
-        style={{
+      {/* Explore */}
+      <Box
+        sx={{
           width: "100%",
+          maxWidth: "1500px",
+          px: isMobile ? 1 : 2,
+          py: 3,
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <ExploreComponent data={explore} title="Explore options near me" />
-      </div>
-      <div
-        style={{
+      </Box>
+
+      {/* Footer */}
+      <Box
+        sx={{
           width: "100%",
+          maxWidth: "1500px",
+          py: 2,
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <Footer />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
