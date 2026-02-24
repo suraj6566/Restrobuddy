@@ -1,5 +1,5 @@
 import axios from "axios";
-const serverURL="http://localhost:5000"
+const serverURL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 function generateOtp(){
     var otp=parseInt((Math.random()*899999)+100000)
@@ -30,7 +30,7 @@ async function postData(url,body)
     }
      catch(e)
     {    
-         if(e.status==401)
+         if(e.status===401)
          {
             return({data:[],message:'Mobile No or EmailId Already Exist...',status:false})
          }
