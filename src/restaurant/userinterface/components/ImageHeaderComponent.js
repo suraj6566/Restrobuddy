@@ -6,7 +6,15 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Typography } from "@mui/material";
 
-export default function ImageHeaderComponent() {
+export default function ImageHeaderComponent({
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
+  locationValue,
+  onLocationChange,
+  onLoginClick,
+  onSignupClick,
+}) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
@@ -54,7 +62,7 @@ export default function ImageHeaderComponent() {
           zIndex: 2,
         }}
       >
-        <Header />
+        <Header onLoginClick={onLoginClick} onSignupClick={onSignupClick} />
       </Box>
 
       {/* Centered Content */}
@@ -64,13 +72,13 @@ export default function ImageHeaderComponent() {
           top: isMobile ? "25%" : isTablet ? "30%" : "35%",
           left: 0,
           width: "100%",
+          zIndex: 3,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
           px: 2,
-          zIndex: 3,
         }}
       >
         {/* Logo */}
@@ -81,6 +89,7 @@ export default function ImageHeaderComponent() {
           sx={{
             width: isMobile ? "140px" : isTablet ? "200px" : "250px",
             height: "auto",
+            filter: "brightness(0) invert(1)",
             mb: 2,
           }}
         />
@@ -93,6 +102,7 @@ export default function ImageHeaderComponent() {
             fontSize: isMobile ? "18px" : isTablet ? "26px" : "32px",
             letterSpacing: 0.5,
             mb: 3,
+            textShadow: "0 10px 30px rgba(0,0,0,0.24)",
           }}
         >
           Discover the best food & drinks in Gwalior
@@ -104,7 +114,13 @@ export default function ImageHeaderComponent() {
             width: isMobile ? "90%" : isTablet ? "70%" : "50%",
           }}
         >
-          <SearchBarComponent />
+          <SearchBarComponent
+            value={searchValue}
+            onChange={onSearchChange}
+            onSubmit={onSearchSubmit}
+            locationValue={locationValue}
+            onLocationChange={onLocationChange}
+          />
         </Box>
       </Box>
     </Box>

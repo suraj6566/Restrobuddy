@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Box, Stack, useMediaQuery } from "@mui/material";
-import Header from "../Header";
+import { Box, useMediaQuery } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import RestroBuddyApp from "../RestroBuddyApp";
 import Footer from "../Footer";
 import ImageHeaderComponent from "../ImageHeaderComponent";
@@ -8,13 +8,24 @@ import PopularRestaurant from "../PopularRestaurant";
 import DiningOnline from "../DiningOnline";
 import ExploreComponent from "../ExploreComponent";
 import { postData } from "../../../../services/FetchNodeServices";
+import Login from "../userslogin/Login";
+import SignUp from "../userslogin/SignUp";
+import Otp from "../userslogin/Otp";
 
 export default function HomePage() {
   const [restaurantList, setRestaurantList] = useState([]);
   const [city, setCity] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [locationValue, setLocationValue] = useState("Gwalior");
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [signOpen, setSignOpen] = useState(false);
+  const [otpOpen, setOtpOpen] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [userData, setUserData] = useState({});
+  const [statusScreen, setStatusScreen] = useState("");
 
   const isMobile = useMediaQuery("(max-width:600px)");
-  const isTablet = useMediaQuery("(max-width:900px)");
+  const navigate = useNavigate();
 
   const fetchCityId = async () => {
     const res = await postData("userinterface/user_fetch_cityid", {
@@ -42,6 +53,45 @@ export default function HomePage() {
   useEffect(() => {
     fetchCityId();
   }, []);
+
+  const findMatchingRestaurant = (searchText) => {
+    const normalizedSearch = `${searchText || ""}`.trim().toLowerCase();
+
+    if (!normalizedSearch) return null;
+
+    return restaurantList.find((item) =>
+      [
+        item?.restaurantname,
+        item?.foodname,
+        item?.category,
+        item?.item_name,
+        item?.listcategory,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedSearch)
+    );
+  };
+
+  const handleSearchSubmit = () => {
+    const trimmedSearch = searchValue?.trim();
+
+    if (!trimmedSearch || !city?.cityid) return;
+
+    const matchedRestaurant = findMatchingRestaurant(trimmedSearch);
+
+    if (matchedRestaurant?.restaurantid) {
+      navigate(
+        `/restaurantfooddetails/${matchedRestaurant.restaurantid}/${matchedRestaurant.restaurantname}`
+      );
+      return;
+    }
+
+    navigate(`/dininganddelivery/${city?.cityid}/${city?.cityname}`, {
+      state: { search: trimmedSearch },
+    });
+  };
 
   const onlinedining = [
     {
@@ -113,7 +163,15 @@ export default function HomePage() {
     >
       {/* Header */}
       <Box sx={{ width: "100%", maxWidth: "1500px" }}>
-        <ImageHeaderComponent />
+        <ImageHeaderComponent
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          onSearchSubmit={handleSearchSubmit}
+          locationValue={locationValue}
+          onLocationChange={setLocationValue}
+          onLoginClick={() => setLoginOpen(true)}
+          onSignupClick={() => setSignOpen(true)}
+        />
       </Box>
 
       {/* Dining and Online */}
@@ -121,6 +179,7 @@ export default function HomePage() {
         sx={{
           width: "100%",
           maxWidth: "1500px",
+          mt: { xs: 1, md: 2 },
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -189,6 +248,40 @@ export default function HomePage() {
       >
         <Footer />
       </Box>
+
+      <Login
+        setOtpOpen={setOtpOpen}
+        otpOpen={otpOpen}
+        loginOpen={loginOpen}
+        setLoginOpen={setLoginOpen}
+        setOtpValue={setOtpValue}
+        otpValue={otpValue}
+        userData={userData}
+        setUserData={setUserData}
+        setStatusScreen={setStatusScreen}
+        statusScreen={statusScreen}
+      />
+      <SignUp
+        setOtpOpen={setOtpOpen}
+        otpOpen={otpOpen}
+        signOpen={signOpen}
+        setSignOpen={setSignOpen}
+        setOtpValue={setOtpValue}
+        otpValue={otpValue}
+        userData={userData}
+        setUserData={setUserData}
+        setStatusScreen={setStatusScreen}
+        statusScreen={statusScreen}
+      />
+      <Otp
+        setOtpOpen={setOtpOpen}
+        otpOpen={otpOpen}
+        setOtpValue={setOtpValue}
+        otpValue={otpValue}
+        userData={userData}
+        setStatusScreen={setStatusScreen}
+        statusScreen={statusScreen}
+      />
     </Box>
   );
 }

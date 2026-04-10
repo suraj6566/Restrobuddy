@@ -9,10 +9,10 @@ export default function OrderOnlineFood({ data,refresh,setRefresh }) {
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <div style={{ width: "60%" }}>
+    <div style={{ width: "100%" }}>
       <h2
         style={{
-          marginLeft: matches ? "18%" : "5%",
+          marginLeft: matches ? "0%" : "2%",
           fontSize: "20px",
           fontWeight: 550,
         }}
@@ -20,13 +20,14 @@ export default function OrderOnlineFood({ data,refresh,setRefresh }) {
         Order Online
       </h2>
 
-      <div style={{ width: "100%", marginLeft: matches ? "17%" : "5%" }}>
+      <div style={{ width: "100%", marginLeft: matches ? "0%" : "2%" }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
             color: "#777",
-            width: "70%",
+            width: matches ? "100%" : "70%",
+            flexWrap: "wrap",
             marginBottom: "2%",
           }}
         >
@@ -48,7 +49,7 @@ export default function OrderOnlineFood({ data,refresh,setRefresh }) {
 
       <div
         style={{
-          marginLeft: matches ? "18%" : "5%",
+          marginLeft: matches ? "0%" : "2%",
           fontSize: "20px",
           fontWeight: 600,
         }}
@@ -56,9 +57,14 @@ export default function OrderOnlineFood({ data,refresh,setRefresh }) {
         Wednesday KFC Epic Deals (upto 52% Off)
       </div>
 
-      {data.map((item, index) => {
-
-        return <FoodComponent item={item} refresh={refresh} setRefresh={setRefresh} data={data} /> }
+      {!data.length ? (
+        <div style={{ marginLeft: matches ? "0%" : "2%", marginTop: 20, color: "#666" }}>
+          No dishes found for this search/filter.
+        </div>
+      ) : (
+        data.map((item, index) => {
+          return <FoodComponent key={item?.foodid || index} item={item} refresh={refresh} setRefresh={setRefresh} data={data} />;
+        })
       )}
 
      

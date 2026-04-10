@@ -6,6 +6,7 @@ import PlusMinusComponent from './PlusMinusComponent';
 import ImageAddCart from './ImageAddCart';
 import FloatingCart from './FloatingCart';
 import { useDispatch, useSelector } from 'react-redux';
+import { getImageUrl, handleImageError } from "../../../services/FetchNodeServices";
 
 export default function FoodComponent({item,data,refresh,setRefresh}){
 
@@ -46,7 +47,7 @@ export default function FoodComponent({item,data,refresh,setRefresh}){
             paddingLeft: "10px",
             paddingRight: "10px",
             width: "100%",
-            marginLeft: matches ? "15%" : "5%",
+            marginLeft: 0,
             marginTop: 10,
           }}
         >
@@ -67,11 +68,12 @@ export default function FoodComponent({item,data,refresh,setRefresh}){
               }}
             >
               <img
-                src={`${serverURL}/images/${item?.icon}`}
+                src={getImageUrl(item?.icon)}
+                onError={handleImageError}
                 style={{
-                  width: matches ? "90px" : "110px",
-                  height: "110px",
-                  marginRight: "16px",
+                  width: matches ? "84px" : "110px",
+                  height: matches ? "84px" : "110px",
+                  marginRight: matches ? "10px" : "16px",
                   objectFit: "cover",
                   borderRadius: 10,
                   cursor: "pointer",
@@ -81,7 +83,7 @@ export default function FoodComponent({item,data,refresh,setRefresh}){
             </div>
 
             {/* Details */}
-            <div style={{ width: "30%" }}>
+            <div style={{ width: matches ? "calc(100% - 180px)" : "42%", minWidth: 0 }}>
               <div
                 style={{
                   display: "flex",
@@ -107,7 +109,7 @@ export default function FoodComponent({item,data,refresh,setRefresh}){
                 style={{
                   color: "rgb(79, 79, 79)",
                   fontSize: "15px",
-                  width: matches ? "50%" : "100%",
+                  width: "100%",
                   marginTop: 3,
                 }}
               >
@@ -150,7 +152,7 @@ export default function FoodComponent({item,data,refresh,setRefresh}){
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                minWidth: 80,
+                minWidth: matches ? 70 : 80,
               }}
             >
               {/* ✅ Each item ke liye alag qty manage */}

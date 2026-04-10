@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-export default function DeliveryFilter({ data }) {
+export default function DeliveryFilter({ data, selectedFilter, onFilterChange }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -10,13 +10,16 @@ export default function DeliveryFilter({ data }) {
     data.map((item, index) => (
       <Button
         key={index}
+        onClick={() =>
+          onFilterChange?.(selectedFilter === item.title ? "" : item.title)
+        }
         style={{
-          background: "#fff",
+          background: selectedFilter === item.title ? "rgb(239, 79, 95)" : "#fff",
           border: "1px solid rgb(207, 207, 207)",
-          color: "rgb(130, 130, 130)",
+          color: selectedFilter === item.title ? "#fff" : "rgb(130, 130, 130)",
           letterSpacing: "0.5px",
           marginLeft: matches ? 10 : 20,
-          marginTop: matches ? 20 : 30,
+          marginTop: matches ? 20 : 24,
           fontWeight: 400,
           fontSize: matches ? 10 : 13,
           textTransform: "none",
@@ -48,6 +51,7 @@ export default function DeliveryFilter({ data }) {
         marginLeft: matches ? 0 : 150,
         marginRight: matches ? 0 : 150,
         marginBottom: matches ? 10 : 20,
+        alignItems: "center",
       }}
     >
       {showFilter()}

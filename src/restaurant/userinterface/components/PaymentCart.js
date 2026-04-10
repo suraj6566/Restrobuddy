@@ -5,7 +5,11 @@ import { useEffect } from 'react';
 import { serverURL } from '../../../services/FetchNodeServices';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 export default function PaymentCart(){
+  const theme = useTheme()
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
   var useraddress=useSelector((state)=>state.useraddress)
   var keys=Object.keys(useraddress)
   var food=useSelector((state)=>state.cart)
@@ -66,14 +70,15 @@ export default function PaymentCart(){
 
 
 return (
-    <div style={{display:'flex',position:'relative' ,width: "80%",height:'70px',marginTop:'5%',padding: "20px",display: "flex",backgroundColor: "#fff"}}>
-     <div style={{position: 'absolute',top: '30%',left:'-30px',backgroundColor: '#fff',boxShadow: '2px 4px 6px grey' ,padding: '5px',color: '#fff'}}>
+    <div style={{position:'relative' ,width: matches ? "100%" : "80%",minHeight:'92px',marginTop:'5%',padding: "20px",display: "flex",backgroundColor: "#fff",borderRadius:16,boxShadow:'0 12px 30px rgba(15,23,42,0.08)',overflow:'hidden'}}>
+     <div style={{position: 'absolute',top: '28%',left:'12px',backgroundColor: '#fff',boxShadow: '0 8px 18px rgba(15,23,42,0.12)' ,padding: '8px',color: '#fff',borderRadius:12}}>
         <WalletIcon style={{fontSize:30,color:'#000'}}/>
       </div>
-      <div style={{ marginBottom: "15px",marginLeft:'4%',width:'100%'}}>
-      <div style={{ fontWeight: "bold", fontSize: "20px",marginTop:15,color:'rgba(2,6,12,.5)'}}>Payment</div>
-      <div>
-        {keys.length!=0?<Button onClick={()=>handlePayment()}>Make Payment</Button>:<></>
+      <div style={{ marginBottom: "15px",marginLeft:'60px',width:'100%'}}>
+      <div style={{ fontWeight: "bold", fontSize: "20px",marginTop:10,color:'rgba(2,6,12,.72)'}}>Payment</div>
+      <div style={{fontSize:13,color:'#6b7280',marginTop:4}}>Confirm your saved address, then continue securely.</div>
+      <div style={{marginTop:10}}>
+        {keys.length!=0?<Button onClick={()=>handlePayment()} style={{background:'#ef4f5f', color:'#fff', borderRadius:10, padding:'8px 18px', textTransform:'none'}}>Make Payment</Button>:<></>
         }
       </div>
       </div>

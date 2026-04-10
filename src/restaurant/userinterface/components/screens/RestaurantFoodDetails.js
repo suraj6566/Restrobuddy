@@ -29,20 +29,57 @@ export default function RestaurantFoodDetails() {
   const [foodList, setFoodList] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [restaurantData, setRestaurantData] = useState({});
+  const [searchValue, setSearchValue] = useState("");
+  const [selectedFoodFilter, setSelectedFoodFilter] = useState("");
 
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
-  const params = useParams();
+  const { restaurantid, restaurantname } = useParams();
+
+  const normalizeRestaurantData = (value) => {
+    if (Array.isArray(value)) {
+      const firstItem = value[0] || {};
+      const mergedPictures = value
+        .flatMap((item) => [
+          ...(item?.pictures
+            ? item.pictures
+                .split(",")
+                .map((picture) => picture?.trim())
+                .filter(Boolean)
+            : []),
+          ...(item?.image ? [item.image] : []),
+          ...(item?.img ? [item.img] : []),
+          ...(item?.filelogo ? [item.filelogo] : []),
+        ])
+        .filter((item, index, self) => item && self.indexOf(item) === index)
+        .join(",");
+
+      return {
+        ...firstItem,
+        pictures: mergedPictures || firstItem?.pictures,
+      };
+    }
+
+    return value || {};
+  };
 
   // ✅ Fetch restaurant details
   const fetchRestaurantDetails = async () => {
     const res = await postData(
       "userinterface/user_fetch_ambience_by_restaurantid",
-      { restaurantid: params?.restaurantid }
+      { restaurantid }
     );
     if (res.status) {
-      setRestaurantData(res.data);
+      const normalizedData = normalizeRestaurantData(res.data);
+
+      setRestaurantData({
+        ...normalizedData,
+        restaurantid: normalizedData?.restaurantid || restaurantid,
+        restaurantname:
+          normalizedData?.restaurantname ||
+          decodeURIComponent(restaurantname || ""),
+      });
     } else {
       alert("Unable to fetch restaurant details");
     }
@@ -51,7 +88,7 @@ export default function RestaurantFoodDetails() {
   // ✅ Fetch categories for restaurant
   const fetchAllCategory = async () => {
     const res = await postData("userinterface/fetch_category_count", {
-      restaurantid: params?.restaurantid,
+      restaurantid,
     });
     if (res.status) {
       setCategoryList(res.data);
@@ -64,20 +101,36 @@ export default function RestaurantFoodDetails() {
   // ✅ Fetch food by selected category
   const fetchAllFood = async () => {
     const res = await postData("userinterface/fetch_all_food_by_category", {
-      restaurantid: params?.restaurantid,
+      restaurantid,
       categoryid: categoryId,
     });
     if (res.status) setFoodList(res.data);
   };
 
   useEffect(() => {
+    setCategoryId(null);
+    setCategoryList([]);
+    setFoodList([]);
+    setRestaurantData({});
+
     fetchRestaurantDetails();
     fetchAllCategory();
-  }, [params?.restaurantid]);
+  }, [restaurantid, restaurantname]);
 
   useEffect(() => {
-    if (categoryId) fetchAllFood();
-  }, [categoryId]);
+    if (restaurantid && categoryId) fetchAllFood();
+  }, [restaurantid, categoryId]);
+
+  useEffect(() => {
+    if (!categoryList.length) return;
+
+    setRestaurantData((prev) => ({
+      ...prev,
+      listcategory:
+        prev?.listcategory ||
+        categoryList.map((item) => item.categoryname).join(", "),
+    }));
+  }, [categoryList]);
 
   const allphotos = [
     { id: 1, img: tabel },
@@ -117,11 +170,19 @@ export default function RestaurantFoodDetails() {
   const renderTabs = () => (
     <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <div
-        style={{ width: "73%", borderBottom: "1px solid grey", marginBottom: 10 }}
+        style={{
+          width: matches ? "92%" : "73%",
+          borderBottom: "1px solid grey",
+          marginBottom: 10,
+          overflowX: "auto",
+        }}
       >
         <Tabs
           value={value}
           onChange={handleTabChange}
+          variant={matches ? "scrollable" : "standard"}
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           TabIndicatorProps={{
             style: { background: "rgb(239, 79, 95)" },
           }}
@@ -135,6 +196,7 @@ export default function RestaurantFoodDetails() {
               fontSize: matches ? 12 : 18,
               letterSpacing: 0.5,
               marginBottom: 3,
+              minWidth: matches ? 110 : undefined,
             }}
           />
           <Tab
@@ -147,6 +209,7 @@ export default function RestaurantFoodDetails() {
               marginLeft: matches ? 14 : 18,
               letterSpacing: 0.5,
               marginBottom: 3,
+              minWidth: matches ? 90 : undefined,
             }}
           />
           <Tab
@@ -159,6 +222,7 @@ export default function RestaurantFoodDetails() {
               marginLeft: matches ? 14 : 18,
               letterSpacing: 0.5,
               marginBottom: 3,
+              minWidth: matches ? 90 : undefined,
             }}
           />
           <Tab
@@ -171,6 +235,7 @@ export default function RestaurantFoodDetails() {
               marginLeft: matches ? 14 : 18,
               letterSpacing: 0.5,
               marginBottom: 3,
+              minWidth: matches ? 80 : undefined,
             }}
           />
         </Tabs>
@@ -190,6 +255,10 @@ export default function RestaurantFoodDetails() {
           foodList={foodList}
           refresh={refresh}
           setRefresh={setRefresh}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          selectedFoodFilter={selectedFoodFilter}
+          setSelectedFoodFilter={setSelectedFoodFilter}
         />
       )}
       {value === 2 && (

@@ -6,9 +6,10 @@ import DeliveryComponent from "./DeliveryComponent";
 import filter2 from "../../../assets/filter.png";
 import { postData } from "../../../services/FetchNodeServices";
 
-export default function DeliveryList({ city }) {
+export default function DeliveryList({ city, searchText = "" }) {
   const [restaurantList, setRestaurantList] = useState([]);
   const [restaurantData, setRestaurantData] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("");
 
   const fetchAllRestaurant = async () => {
     try {
@@ -37,12 +38,13 @@ export default function DeliveryList({ city }) {
   useEffect(() => {
     fetchAllRestaurant();
     fetchAllRestaurantAmbience();
-  }, []);
+  }, [city?.cityid]);
 
   const deliveryFilters = [
-    { filterid: 1, title: "FILTERS", img: filter2 },
-    { filterid: 2, title: "Pure Veg" },
-    { filterid: 3, title: "Cuisines" },
+    { filterid: 1, title: "Open Now", img: filter2 },
+    { filterid: 2, title: "Has Image" },
+    { filterid: 3, title: "Top Rated" },
+    { filterid: 4, title: "Veg Friendly" },
   ];
 
   const foodImages = [
@@ -102,6 +104,46 @@ export default function DeliveryList({ city }) {
       img: "delight.png",
     },
   ];
+  const sourceRestaurantData = restaurantData.length ? restaurantData : deliveryCards;
+  const getNumericRating = (value) => {
+    const matchedValue = `${value || ""}`.match(/\d+(\.\d+)?/);
+    return matchedValue ? Number(matchedValue[0]) : 0;
+  };
+  const normalizedSearch = searchText.trim().toLowerCase();
+  const filteredRestaurantData = sourceRestaurantData.filter((item) => {
+    const searchableText = [
+      item?.restaurantname,
+      item?.foodname,
+      item?.category,
+      item?.item_name,
+      item?.address,
+      item?.cityname,
+      item?.listcategory,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch);
+    const pictureList = item?.pictures
+      ? item.pictures.split(",").map((picture) => picture?.trim()).filter(Boolean)
+      : [];
+    const hasImage = Boolean(pictureList[0] || pictureList[1] || item?.image || item?.img || item?.filelogo);
+    const isOpenNow = Boolean(item?.timingopen || item?.opentime);
+    const isTopRated = getNumericRating(item?.rating) >= 4;
+    const isVegFriendly = /veg|vegetarian|south indian|sweets|paneer/i.test(
+      [item?.foodname, item?.category, item?.listcategory, item?.item_name]
+        .filter(Boolean)
+        .join(" ")
+    );
+
+    if (selectedFilter === "Open Now" && !isOpenNow) return false;
+    if (selectedFilter === "Has Image" && !hasImage) return false;
+    if (selectedFilter === "Top Rated" && !isTopRated) return false;
+    if (selectedFilter === "Veg Friendly" && !isVegFriendly) return false;
+
+    return matchesSearch;
+  });
 
   return (
     <div
@@ -114,8 +156,23 @@ export default function DeliveryList({ city }) {
         paddingBottom: 30,
       }}
     >
+      <div
+        style={{
+          margin: "0 auto",
+          width: "min(100%, 1080px)",
+          padding: "0 12px",
+          color: "#6b7280",
+          fontSize: 13,
+        }}
+      >
+        Use filters for faster picks, then click any restaurant card to continue.
+      </div>
       {/* Filter Bar */}
-      <DeliveryFilter data={deliveryFilters} />
+      <DeliveryFilter
+        data={deliveryFilters}
+        selectedFilter={selectedFilter}
+        onFilterChange={setSelectedFilter}
+      />
 
       {/* Food Categories */}
       <FoodCircleComponent data={foodImages} />
@@ -124,7 +181,7 @@ export default function DeliveryList({ city }) {
       <BrandCircleComponent data={restaurantList.length ? restaurantList : brandImages} />
 
       {/* Delivery Restaurants */}
-      <DeliveryComponent data={restaurantData.length ? restaurantData : deliveryCards} />
+      <DeliveryComponent data={filteredRestaurantData} />
     </div>
   );
 }

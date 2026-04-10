@@ -3,6 +3,7 @@ import axios from "axios";
 // ✅ URLs
 const LOCAL = "http://localhost:5000";
 const LIVE = process.env.REACT_APP_API_URL;
+const DEFAULT_FOOD_IMAGE = "/picture.png";
 
 // ✅ Auto switch (local dev vs production)
 const serverURL =
@@ -54,10 +55,31 @@ async function postData(url, body) {
 }
 
 // ✅ IMAGE HELPER (🔥 MOST IMPORTANT)
-function getImageUrl(imageName) {
-  if (!imageName) return "";
+function getImageUrl(imagePath) {
+  if (!imagePath) return DEFAULT_FOOD_IMAGE;
 
-  return `${serverURL}/images/${imageName}`;
+  const trimmedPath = `${imagePath}`.trim();
+
+  if (!trimmedPath) return DEFAULT_FOOD_IMAGE;
+  if (/^https?:\/\//i.test(trimmedPath)) return trimmedPath;
+  if (trimmedPath.startsWith("/uploads/")) return `${serverURL}${trimmedPath}`;
+  if (trimmedPath.startsWith("/images/")) return `${serverURL}${trimmedPath}`;
+  if (trimmedPath.startsWith("/")) return trimmedPath;
+
+  return `${serverURL}/images/${trimmedPath}`;
 }
 
-export { serverURL, getData, postData, generateOtp, getImageUrl };
+function handleImageError(event) {
+  event.currentTarget.onerror = null;
+  event.currentTarget.src = DEFAULT_FOOD_IMAGE;
+}
+
+export {
+  serverURL,
+  DEFAULT_FOOD_IMAGE,
+  getData,
+  postData,
+  generateOtp,
+  getImageUrl,
+  handleImageError,
+};

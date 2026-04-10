@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-export default function RestaurantFilter({ data }) {
+export default function RestaurantFilter({ data, selectedFilter, onFilterChange }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -10,15 +10,18 @@ export default function RestaurantFilter({ data }) {
     data.map((item, index) => (
       <Button
         key={index}
+        onClick={() =>
+          onFilterChange?.(selectedFilter === item.title ? "" : item.title)
+        }
         style={{
           padding: matches ? "0.3rem 0.5rem" : "0.5rem 0.7rem",
           textTransform: "none",
-          background: "#fff",
+          background: selectedFilter === item.title ? "rgb(239, 79, 95)" : "#fff",
           border: "1px solid rgb(207, 207, 207)",
-          color: "rgb(156, 156, 156)",
+          color: selectedFilter === item.title ? "#fff" : "rgb(156, 156, 156)",
           letterSpacing: "0.5px",
           marginLeft: matches ? 10 : 20,
-          marginTop: matches ? 25 : 60,
+          marginTop: matches ? 20 : 32,
           fontWeight: 400,
           fontSize: matches ? 10 : 14,
           borderRadius: 8,
@@ -45,8 +48,9 @@ export default function RestaurantFilter({ data }) {
         display: "flex",
         flexWrap: "wrap",
         justifyContent: matches ? "center" : "flex-start",
-        marginLeft: matches ? 0 : 160,
-        marginRight: matches ? 0 : 160,
+        marginLeft: matches ? 0 : 150,
+        marginRight: matches ? 0 : 150,
+        alignItems: "center",
       }}
     >
       {showFilter()}

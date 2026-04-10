@@ -4,7 +4,13 @@ import { serverURL } from "../../../services/FetchNodeServices";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-export default function DiningSearchBarComponent() {
+export default function DiningSearchBarComponent({
+  onLoginClick,
+  onSignupClick,
+  searchValue = "",
+  onSearchChange,
+  onSearchSubmit,
+}) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -16,8 +22,10 @@ export default function DiningSearchBarComponent() {
           display: "flex",
           justifyContent: isMobile ? "space-between" : "center",
           alignItems: "center",
-          padding: "10px 20px",
+          padding: "12px 20px",
           flexWrap: "wrap",
+          borderBottom: "1px solid rgba(15,23,42,0.08)",
+          background: "#fff",
         }}
       >
         {/* ---------- LOGO ---------- */}
@@ -38,11 +46,12 @@ export default function DiningSearchBarComponent() {
               width: "46%",
               height: 50,
               padding: "0 10px",
-              borderRadius: 6,
-              border: "1px solid grey",
+              borderRadius: 12,
+              border: "1px solid #d4d4d8",
               display: "flex",
               alignItems: "center",
               background: "#fff",
+              boxShadow: "0 8px 24px rgba(15,23,42,0.06)",
             }}
           >
             {/* Location */}
@@ -75,10 +84,14 @@ export default function DiningSearchBarComponent() {
             <img
               src={search}
               alt="search"
+              onClick={() => onSearchSubmit?.()}
               style={{ width: 25, height: 25, marginRight: 10 }}
             />
             <input
               type="text"
+              value={searchValue}
+              onChange={(event) => onSearchChange?.(event.target.value)}
+              onKeyDown={(event) => event.key === "Enter" && onSearchSubmit?.()}
               placeholder="Search for restaurant, cuisine or a dish"
               style={{
                 flex: 1,
@@ -95,10 +108,10 @@ export default function DiningSearchBarComponent() {
         {/* ---------- LOGIN & SIGNUP ---------- */}
         {!isMobile && (
           <>
-            <div style={{ fontSize: 18, color: "grey", marginLeft: 60 }}>
+            <div onClick={onLoginClick} style={{ fontSize: 18, color: "grey", marginLeft: 60, cursor: "pointer" }}>
               Log in
             </div>
-            <div style={{ fontSize: 18, color: "grey", marginLeft: 40 }}>
+            <div onClick={onSignupClick} style={{ fontSize: 18, color: "grey", marginLeft: 40, cursor: "pointer" }}>
               Sign up
             </div>
           </>
@@ -112,6 +125,7 @@ export default function DiningSearchBarComponent() {
             display: "flex",
             justifyContent: "center",
             padding: "8px 0",
+            background: "#fff",
           }}
         >
           <div
@@ -119,16 +133,18 @@ export default function DiningSearchBarComponent() {
               width: "85%",
               height: 40,
               padding: "0 10px",
-              borderRadius: 6,
-              border: "1px solid grey",
+              borderRadius: 10,
+              border: "1px solid #d4d4d8",
               display: "flex",
               alignItems: "center",
               background: "#fff",
+              boxShadow: "0 8px 24px rgba(15,23,42,0.06)",
             }}
           >
             <img
               src={search}
               alt="search"
+              onClick={() => onSearchSubmit?.()}
               style={{
                 width: 22,
                 height: 22,
@@ -138,6 +154,9 @@ export default function DiningSearchBarComponent() {
             />
             <input
               type="text"
+              value={searchValue}
+              onChange={(event) => onSearchChange?.(event.target.value)}
+              onKeyDown={(event) => event.key === "Enter" && onSearchSubmit?.()}
               placeholder="Search for restaurant, cuisine or a dish"
               style={{
                 flex: 1,

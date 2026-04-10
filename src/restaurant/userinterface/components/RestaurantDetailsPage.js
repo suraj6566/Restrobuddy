@@ -1,10 +1,12 @@
 import { Button } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import { serverURL } from "../../../services/FetchNodeServices";
+import {
+  getImageUrl,
+  handleImageError,
+  serverURL,
+} from "../../../services/FetchNodeServices";
 import StarIcon from "@mui/icons-material/Star";
 import Box from "@mui/material/Box";
-import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
 import direction from "../../../assets/direction.png";
 import share from "../../../assets/share.png";
 import feedback from "../../../assets/feedback.png";
@@ -14,14 +16,52 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 export default function RestaurantDetailsPage({ data }) {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const restaurantData = Array.isArray(data) ? data[0] || {} : data || {};
+  const PARAM_FOOD_IMAGE =
+    "https://restrobuddybackend-production-d28f.up.railway.app/images/cee5cee7-1d52-4a99-bf8c-6883b221b6bc.png";
+  const shouldIgnoreGalleryImage = (imagePath) => {
+    const value = `${imagePath || ""}`.toLowerCase();
 
-  const resimg = data?.pictures?.split(",")?.filter((x) => x?.trim() !== "");
-  const imgs = [
-    { cols: 3, rows: 2 },
-    { cols: 1, rows: 1 },
-    { cols: 1, rows: 2 },
-    { cols: 1, rows: 1 },
-  ];
+    return (
+      !value ||
+      value.includes("placeholder") ||
+      value.includes("picture.png") ||
+      value.includes("restlogo") ||
+      value.includes("headerlogo") ||
+      value.includes("filelogo") ||
+      value.includes("logo.png")
+    );
+  };
+  const baseImages = [
+    ...(restaurantData?.pictures
+      ? restaurantData.pictures
+          .split(",")
+          .map((item) => item?.trim())
+          .filter(Boolean)
+      : []),
+    ...(restaurantData?.image ? [restaurantData.image] : []),
+    ...(restaurantData?.img ? [restaurantData.img] : []),
+  ].filter(
+    (item, index, self) =>
+      item &&
+      !shouldIgnoreGalleryImage(item) &&
+      self.indexOf(item) === index
+  );
+  const resimg =
+    restaurantData?.restaurantname?.toLowerCase() === "param food"
+      ? [
+          PARAM_FOOD_IMAGE,
+          ...baseImages.filter((item) => item !== restaurantData?.filelogo),
+        ].slice(0, 4)
+      : baseImages;
+  const galleryImages = [...resimg.slice(0, 4)];
+
+  // Keep the gallery layout filled on restaurants that only have 2-3 images.
+  if (galleryImages.length > 0) {
+    while (galleryImages.length < 4) {
+      galleryImages.push(galleryImages[galleryImages.length - 1]);
+    }
+  }
 
   const showDetails = () => (
     <div
@@ -33,7 +73,7 @@ export default function RestaurantDetailsPage({ data }) {
     >
       <div
         style={{
-          width: "73%",
+          width: matches ? "92%" : "73%",
           display: "flex",
           flexDirection: "column",
         }}
@@ -47,7 +87,7 @@ export default function RestaurantDetailsPage({ data }) {
             marginTop: 10,
           }}
         >
-          Home / India / Gwalior / Lashkar / {data.restaurantname} /
+          Home / India / Gwalior / Lashkar / {restaurantData.restaurantname} /
           <span style={{ color: "#bdc3c7" }}> Order Online</span>
         </div>
 
@@ -69,7 +109,7 @@ export default function RestaurantDetailsPage({ data }) {
               marginTop: 20,
             }}
           >
-            {data.restaurantname}
+            {restaurantData.restaurantname}
           </div>
 
           {!matches && (
@@ -116,7 +156,7 @@ export default function RestaurantDetailsPage({ data }) {
             marginTop: 5,
           }}
         >
-          {data?.listcategory?.split(",")?.slice(0, 3)?.join(", ")}
+          {restaurantData?.listcategory?.split(",")?.slice(0, 3)?.join(", ")}
         </div>
         <div
           style={{
@@ -126,11 +166,12 @@ export default function RestaurantDetailsPage({ data }) {
             marginTop: 5,
           }}
         >
-          {data.address}
+          {restaurantData.address}
         </div>
 
         {/* Timing + Phone */}
         <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
           <div
             style={{
               border: "1px solid grey",
@@ -141,14 +182,14 @@ export default function RestaurantDetailsPage({ data }) {
               color: "rgb(130,130,130)",
             }}
           >
-            Open now - {data.timingopen} - {data.timingclose}
+            Open now - {restaurantData.timingopen} - {restaurantData.timingclose}
           </div>
           <div
             style={{
               width: 0,
               height: 12,
-              marginTop: matches ? 9.5 : 12,
-              marginLeft: 10,
+              marginTop: matches ? 0 : 2,
+              marginLeft: 2,
               border: "1px solid rgb(179,171,171)",
             }}
           ></div>
@@ -167,12 +208,13 @@ export default function RestaurantDetailsPage({ data }) {
               textDecoration: "underline rgb(130,130,130)",
             }}
           >
-            {data.phonenumber}
+            {restaurantData.phonenumber}
           </div>
+        </div>
         </div>
 
         {/* Buttons */}
-        <Stack spacing={1} direction="row">
+        <Stack spacing={1} direction="row" sx={{ flexWrap: "wrap" }}>
           {[{ img: direction, label: "Direction" }, { img: share, label: "Share" }, { img: feedback, label: "Reviews" }].map(
             (b, i) => (
               <Button
@@ -198,27 +240,60 @@ export default function RestaurantDetailsPage({ data }) {
         </Stack>
 
         {/* ✅ Responsive Image Grid */}
-        <Box sx={{ width: "100%", height: matches ? 230 : 330, marginTop: 2 }}>
-          <ImageList
-            variant="standard"
-            cols={matches ? 2 : 5}
-            rowHeight={matches ? 100 : 150}
-            gap={6}
+        <Box
+          sx={{
+            width: "100%",
+            marginTop: 2,
+            overflow: "hidden",
+            borderRadius: 3,
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: matches ? "1fr 1fr" : "2.1fr 1fr 1fr",
+              gridTemplateRows: matches ? "180px 180px" : "170px 170px",
+              gap: 8,
+            }}
           >
-            {resimg?.map((item, i) => (
-              <ImageListItem
-                key={i}
-                cols={imgs[i]?.cols || 1}
-                rows={imgs[i]?.rows || 1}
+            {galleryImages.map((item, i) => (
+              <div
+                key={`${restaurantData?._id || restaurantData?.id || restaurantData?.restaurantid || restaurantData?.restaurantname}-${item}-${i}`}
+                style={{
+                  gridColumn: matches
+                    ? i === 0
+                      ? "1 / span 2"
+                      : "auto"
+                    : i === 0
+                    ? "1 / span 1"
+                    : "auto",
+                  gridRow: matches
+                    ? i === 0
+                      ? "1 / span 1"
+                      : "auto"
+                    : i === 0
+                    ? "1 / span 2"
+                    : i === 2
+                    ? "1 / span 2"
+                    : "auto",
+                  minHeight: 0,
+                }}
               >
                 <img
-                  src={`${serverURL}/images/${item}`}
+                  src={getImageUrl(item)}
+                  onError={handleImageError}
                   loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: 10,
+                    display: "block",
+                  }}
                 />
-              </ImageListItem>
+              </div>
             ))}
-          </ImageList>
+          </div>
         </Box>
       </div>
     </div>

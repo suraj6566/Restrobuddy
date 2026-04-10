@@ -8,7 +8,7 @@ export default function DiningOnline({data})
     })
     }
 
-    return(<div style={{width:'100%',display:'flex',justifyContent:'center'}} >
+    return(<div style={{width:'100%',display:'flex',justifyContent:'center',flexWrap:'wrap',gap:36}} >
         {showList()}
     </div>)
 }
