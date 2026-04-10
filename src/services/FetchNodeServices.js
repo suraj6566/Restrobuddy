@@ -1,5 +1,7 @@
 import axios from "axios";
-const serverURL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+// const serverURL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+const serverURL = "https://restrobuddybackend.onrender.com";
 
 function generateOtp(){
     var otp=parseInt((Math.random()*899999)+100000)
