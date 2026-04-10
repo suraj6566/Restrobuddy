@@ -1,7 +1,12 @@
 import axios from "axios";
 // const serverURL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-const serverURL = "https://restrobuddybackend.onrender.com";
+// const serverURL = "http://localhost:5000";
+
+// Dono environment handle karne ke liye ye best tarika hai:
+const serverURL = window.location.hostname === "localhost" 
+    ? "http://localhost:5000" 
+    : "https://restrobuddybackend.onrender.com";
 
 function generateOtp(){
     var otp=parseInt((Math.random()*899999)+100000)
